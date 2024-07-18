@@ -1,9 +1,13 @@
 from django.db import models
 from users.models import Player
 
+from faker import Faker
+
+faker = Faker()
+
 
 class Tournament(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, default=faker.name())
     start_date = models.DateField()
     end_date = models.DateField()
 
