@@ -17,11 +17,31 @@ from .serializers import (
     
 
 class RegisterView(generics.GenericAPIView):
+    """
+    RegisterView handles the user registration process.
+
+    Methods:
+    - post: Handles POST requests for user registration.
+
+    Attributes:
+    - serializer_class: Specifies the serializer to be used for registration.
+    - permission_classes: Specifies that any user is allowed to access this view.
+    - authentication_classes: Specifies the authentication mechanism (JWT).
+    """
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
     authentication_classes = [JWTAuthentication]
 
     def post(self, request, *args,  **kwargs):
+        """
+        Handle POST requests to register a new user.
+
+        Args:
+        - request: The request object containing user registration data.
+
+        Returns:
+        - Response: A response containing the newly created user's data and a success message.
+        """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
@@ -35,12 +55,29 @@ class RegisterView(generics.GenericAPIView):
 
 
 class PlayerPagination(PageNumberPagination):
+    """
+    PlayerPagination handles pagination for the Player list view.
+
+    Attributes:
+    - page_size_query_param: The query parameter name for the page size.
+    - page_size: The default number of items per page.
+    - max_page_size: The maximum number of items per page.
+    """
     page_size_query_param = 'size'
     page_size = 10
     max_page_size = 50
 
 
 class PlayersListView(generics.ListAPIView):
+    """
+    PlayersListView provides a list of all players. Only accessible by admin users.
+
+    Attributes:
+    - queryset: Specifies the queryset to be used (all Player objects).
+    - serializer_class: Specifies the serializer to be used (PlayerSerializer).
+    - permission_classes: Specifies that only authenticated admin users can access this view.
+    - pagination_class: Specifies the pagination class to be used (PlayerPagination).
+    """
     queryset = Player.objects.all()
     serializer_class = PlayerSerializer
     permission_classes = [IsAdminUser, IsAuthenticated]
@@ -48,12 +85,30 @@ class PlayersListView(generics.ListAPIView):
 
 
 class AddPlayerView(generics.CreateAPIView):
+    """
+    AddPlayerView handles the creation of new players. Only accessible by admin users.
+
+    Attributes:
+    - serializer_class: Specifies the serializer to be used (PlayerSerializer).
+    - permission_classes: Specifies that only authenticated admin users can access this view.
+    - authentication_classes: Specifies the authentication mechanism (JWT).
+    """
     permission_classes = [IsAdminUser]
     authentication_classes = [JWTAuthentication]
     serializer_class = PlayerSerializer
 
 
 class ReadPlayerView(generics.RetrieveAPIView):
+    """
+    ReadPlayerView provides details of a specific player. Only accessible by admin users.
+
+    Attributes:
+    - serializer_class: Specifies the serializer to be used (PlayerSerializer).
+    - queryset: Specifies the queryset to be used (all Player objects).
+    - permission_classes: Specifies that only authenticated admin users can access this view.
+    - authentication_classes: Specifies the authentication mechanism (JWT).
+    - lookup_field: Specifies the field to look up the player (default is 'pk').
+    """
     permission_classes = [IsAdminUser]
     authentication_classes = [JWTAuthentication]
     serializer_class = PlayerSerializer
@@ -62,6 +117,16 @@ class ReadPlayerView(generics.RetrieveAPIView):
 
 
 class UpdatePlayerView(generics.UpdateAPIView):
+    """
+    UpdatePlayerView handles the update of existing player details. Only accessible by admin users.
+
+    Attributes:
+    - serializer_class: Specifies the serializer to be used (PlayerSerializer).
+    - queryset: Specifies the queryset to be used (all Player objects).
+    - permission_classes: Specifies that only authenticated admin users can access this view.
+    - authentication_classes: Specifies the authentication mechanism (JWT).
+    - lookup_field: Specifies the field to look up the player (default is 'pk').
+    """
     permission_classes = [IsAdminUser]
     authentication_classes = [JWTAuthentication]
     serializer_class = PlayerSerializer
@@ -70,6 +135,16 @@ class UpdatePlayerView(generics.UpdateAPIView):
 
 
 class DeletePlayerView(generics.DestroyAPIView):
+    """
+    DeletePlayerView handles the deletion of players. Only accessible by admin users.
+
+    Attributes:
+    - serializer_class: Specifies the serializer to be used (PlayerSerializer).
+    - queryset: Specifies the queryset to be used (all Player objects).
+    - permission_classes: Specifies that only authenticated admin users can access this view.
+    - authentication_classes: Specifies the authentication mechanism (JWT).
+    - lookup_field: Specifies the field to look up the player (default is 'pk').
+    """
     permission_classes = [IsAdminUser]
     authentication_classes = [JWTAuthentication]
     serializer_class = PlayerSerializer

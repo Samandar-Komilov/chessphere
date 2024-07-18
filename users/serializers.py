@@ -5,6 +5,19 @@ from .models import Player
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    """
+    RegisterSerializer handles user registration including password hashing
+    and creating a Player profile for each new user.
+
+    Meta:
+        model (User): The User model from Django's authentication system.
+        fields (tuple): The fields to be included in the serialized data.
+        extra_kwargs (dict): Specifies that the password field should be write-only.
+
+    Methods:
+        create: Creates a new user with the given validated data and 
+                a corresponding Player profile.
+    """
     class Meta:
         model = User
         fields = ('id', 'username', 'password')
@@ -13,6 +26,15 @@ class RegisterSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
+        """
+        Creates a new user and a corresponding Player profile.
+
+        Args:
+            validated_data (dict): The validated data from the serializer.
+
+        Returns:
+            User: The newly created User instance.
+        """
         user = User.objects.create_user(
             username=validated_data['username'],
             password=validated_data['password'],
@@ -23,6 +45,14 @@ class RegisterSerializer(serializers.ModelSerializer):
     
 
 class UserSerializer(serializers.ModelSerializer):
+    """
+    UserSerializer handles serialization and deserialization of User instances,
+    including additional fields related to the user's profile and permissions.
+
+    Meta:
+        model (User): The User model from Django's authentication system.
+        fields (list): The fields to be included in the serialized data.
+    """
     class Meta:
         model = User
         fields = ['id', 'username', 'password', 'first_name', 'last_name', 'is_active', 'is_staff', 'is_superuser', 'date_joined']
