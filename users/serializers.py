@@ -98,3 +98,53 @@ class PlayerSerializer(serializers.ModelSerializer):
         user.save()
 
         return instance
+
+
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    """
+    Serializer for updating Player data.
+
+    This serializer handles the updating of Player objects, allowing partial updates.
+
+    Fields:
+        email (str): The email of the related User.
+        country (str): The country of the player.
+        first_name (str): The first name of the player.
+        last_name (str): The last name of the player.
+        birthdate (datetime): The birthdate of the player.
+    """
+    email = serializers.EmailField(source='user.email', required=False)
+    first_name = serializers.CharField(source='user.first_name', required=False)
+    last_name = serializers.CharField(source='user.last_name', required=False)
+    
+    class Meta:
+        model = Player
+        fields = ['id', 'email', 'country', 'first_name', 'last_name', 'birthdate']
+        partial = True
+    
+    def update(self, instance, validated_data):
+        """
+        Update method to handle partial updates of the Player model.
+
+        Args:
+            instance (Player): The Player instance to be updated.
+            validated_data (dict): The validated data containing the updated information for the Player.
+
+        Returns:
+            Player: The updated Player instance.
+        """
+        # Update user data if provided
+        user_data = validated_data.pop('user', {})
+        if user_data:
+            user = instance.user
+            user.email = user_data.get('email', user.email)
+            user.first_name = user_data.get('first_name', user.first_name)
+            user.last_name = user_data.get('last_name', user.last_name)
+            user.save()
+        
+        # Update player data
+        instance.country = validated_data.get('country', instance.country)
+        instance.birthdate = validated_data.get('birthdate', instance.birthdate)
+        
+        instance.save()
+        return instance

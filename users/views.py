@@ -5,21 +5,15 @@ from rest_framework import generics, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from django.contrib.auth.models import User
+
 from .models import Player
 from .serializers import (
     RegisterSerializer, 
     UserSerializer,
-    PlayerSerializer
+    PlayerSerializer,
+    ProfileUpdateSerializer
 )
-
-
-class Home(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        content = {"message": "Hello World!"}
-        return Response(content)
     
 
 class RegisterView(generics.GenericAPIView):
@@ -113,3 +107,75 @@ class PlayerChangeActivityView(APIView):
             return Response({'status': f'Player has been {status_message}.'}, status=status.HTTP_200_OK)
         except Player.DoesNotExist:
             return Response({'error': 'Player not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
+
+
+class ProfileView(generics.RetrieveAPIView):
+    """
+    View to retrieve a player's own profile details. Accessible by authenticated players.
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    serializer_class = ProfileUpdateSerializer
+
+    def get_object(self):
+        """
+        Return the Player instance for the authenticated user.
+        """
+        user = User.objects.get(id=self.request.user.id)
+        return Player.objects.get(user=user)
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handle retrieval of the player's own profile details.
+
+        Args:
+            request: The request object.
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            Response: The response object containing the player's profile details.
+        """
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+
+class ProfileUpdateView(generics.UpdateAPIView):
+    """
+    View to update a player's own details. Accessible by authenticated players.
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    serializer_class = ProfileUpdateSerializer
+    
+    def get_object(self):
+        """
+        Return the Player instance for the authenticated user.
+        """
+        user = User.objects.get(id=self.request.user.id)
+        return Player.objects.get(user=user)
+    
+    def get(self, request, *args, **kwargs):
+        pass
+    
+    def update(self, request, *args, **kwargs):
+        """
+        Handle updates to a player's own profile details.
+        
+        Args:
+            request: The request object.
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
+            
+        Returns:
+            Response: The response object indicating the result of the update operation.
+        """
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        
+        return Response(serializer.data)

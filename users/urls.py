@@ -1,6 +1,5 @@
 from django.urls import path
 from .views import (
-    Home, 
     RegisterView,
     PlayersListView,
     AddPlayerView,
@@ -8,6 +7,8 @@ from .views import (
     UpdatePlayerView,
     DeletePlayerView,
     PlayerChangeActivityView,
+    ProfileUpdateView,
+    ProfileView
 )
 
 from rest_framework_simplejwt.views import (
@@ -19,8 +20,6 @@ from rest_framework_simplejwt.views import (
 
 
 urlpatterns = [
-    path('', Home.as_view(), name='home'),
-
     # auth
     path('register/', RegisterView.as_view(), name='register'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -35,4 +34,8 @@ urlpatterns = [
     path('players/update/<int:pk>/', UpdatePlayerView.as_view(), name='update-player'),
     path('players/delete/<int:pk>/', DeletePlayerView.as_view(), name='delete-player'),
     path('players/activity/<int:pk>/', PlayerChangeActivityView.as_view(), name='change-player-activity'),
+
+    # Profile
+    path('profile/', ProfileView.as_view(), name='profile'),
+    path('profile/edit/', ProfileUpdateView.as_view(), name='profile-edit')
 ]
