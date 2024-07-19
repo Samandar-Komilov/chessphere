@@ -81,6 +81,7 @@ class PlayersListView(generics.ListAPIView):
     queryset = Player.objects.all()
     serializer_class = PlayerSerializer
     permission_classes = [IsAdminUser, IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
     pagination_class = PlayerPagination
 
 
