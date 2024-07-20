@@ -1,3 +1,21 @@
+"""
+This script simulates a tournament with multiple players competing in several rounds of matches.
+
+Classes:
+    Player: Represents a player in the tournament with attributes such as id, name, score, and a list of opponents.
+    Match: Represents a match between two players with a result indicating the winner.
+    Tournament: Manages the players and rounds of matches in the tournament, updates scores, and generates a leaderboard.
+
+Functions:
+    pair_players(players): Pairs players for a round based on their scores, ensuring no player competes against the same opponent more than once.
+    print_leaderboard(tournament): Prints the current leaderboard of the tournament.
+
+Simulation:
+    - Creates a list of 20 players.
+    - Initializes the tournament with these players.
+    - Simulates 7 rounds of matches where players are paired, results are randomly determined, scores are updated, and the leaderboard is printed after each round.
+"""
+
 class Player:
     def __init__(self, id, name):
         self.id = id

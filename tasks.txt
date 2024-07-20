@@ -10,12 +10,12 @@
 ---< Tournament Management >---
 1. Create proper models for tournament and matches +
 2. Admin can create tournament +
-3. Admin can add players to tournaments (Add participants and assign them to a specific tournament)
+3. Admin can add players to tournaments (Add participants and assign them to a specific tournament) +
 4. Tournament has to contain a unique name and a list of participants ("no participants") +
 
 ---< Match management >---
 1. Swiss-system tournament rules +
-2. Auto pair users +
+2. Auto pair users
 3. Admins can update match results
 
 ---< Leaderboard >---

@@ -11,6 +11,8 @@ django-countries = "*"
 djangorestframework-simplejwt = "*"
 drf-yasg = "*"
 faker = "*"
+pytest = "*"
+pytest-django = "*"
 
 [dev-packages]
 

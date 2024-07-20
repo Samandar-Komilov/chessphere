@@ -48,7 +48,7 @@ class RegisterView(generics.GenericAPIView):
         return Response({
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
             "message": "User Created Successfully. Now perform Login to get your token",
-        })
+        }, status=status.HTTP_201_CREATED)
     
 
 # CRUD operations on Players by admin users
@@ -78,7 +78,7 @@ class PlayersListView(generics.ListAPIView):
     - permission_classes: Specifies that only authenticated admin users can access this view.
     - pagination_class: Specifies the pagination class to be used (PlayerPagination).
     """
-    queryset = Player.objects.all()
+    queryset = Player.objects.all().order_by('id')
     serializer_class = PlayerSerializer
     permission_classes = [IsAdminUser, IsAuthenticated]
     authentication_classes = [JWTAuthentication]

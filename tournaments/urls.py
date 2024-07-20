@@ -1,20 +1,19 @@
 """
-URL Configuration for the Tournament application.
+URL configuration for the tournament and participant views.
 
-This module sets up the URL routing for the Tournament application using Django Rest Framework's DefaultRouter.
-It registers the TournamentViewSet with the router to automatically generate the appropriate URLs for CRUD operations.
+This module sets up the routing of URLs to the appropriate viewsets and views.
+It uses Django REST Framework's DefaultRouter to handle the routing for the TournamentViewSet.
+Additional paths are defined for listing participants of a specific tournament and for creating, retrieving, updating, and deleting participants.
 
 Routes:
-    - /tournaments/: Handles all operations (list, create, retrieve, update, delete) for Tournament instances.
+    - '' (root): Includes all routes registered with the DefaultRouter.
+    - 'tournaments/<int:pk>/participants/': Lists all participants for a specific tournament (specified by ID).
+    - 'participants/create/': Creates a new participant.
+    - 'participants/<int:pk>/': Retrieves, updates, partially updates, or deletes a specific participant (specified by ID).
 
-Modules:
-    - django.urls: Provides functions to define URL patterns.
-    - rest_framework.routers: Provides a router for automatic URL routing with DRF viewsets.
-    - .views: Imports the TournamentViewSet which contains the logic for handling tournament-related requests.
-
-Usage:
-    Include this URL configuration in the project's main urls.py file to enable the routes:
-        path('api/', include('tournament.urls'))
+Attributes:
+    router (DefaultRouter): The router instance used to register the TournamentViewSet routes.
+    urlpatterns (list): The list of URL patterns for routing requests to the appropriate views.
 """
 
 

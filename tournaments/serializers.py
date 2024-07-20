@@ -67,6 +67,19 @@ class TournamentSerializer(serializers.ModelSerializer):
     
 
 class TournamentParticipantSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Participant model to represent tournament participants.
+
+    This serializer is used to serialize and deserialize the data of participants in a tournament.
+    It includes the nested player data and other participant details.
+
+    Attributes:
+        player (PlayerSerializer): Nested serializer for player data, read-only.
+
+    Meta:
+        model (Model): The model class that is being serialized.
+        fields (list): The list of fields to be included in the serialized representation.
+    """
     player = PlayerSerializer(read_only=True)
 
     class Meta:
@@ -76,6 +89,27 @@ class TournamentParticipantSerializer(serializers.ModelSerializer):
 
 
 class ParticipantSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Participant model.
+
+    This serializer is used to create and update Participant instances. It includes additional validation
+    to ensure a player does not participate in a tournament more than once.
+
+    Attributes:
+        player_id (IntegerField): The ID of the player participating in the tournament, defaults to 1.
+        tournament_id (IntegerField): The ID of the tournament, defaults to 1.
+
+    Meta:
+        model (Model): The model class that is being serialized.
+        fields (list): The list of fields to be included in the serialized representation.
+    
+    Methods:
+        create(validated_data):
+            Creates a new Participant instance after validating the player and tournament data.
+        
+        update(instance, validated_data):
+            Updates an existing Participant instance, ensuring 'player_id' and 'tournament_id' cannot be changed.
+    """
     player_id = serializers.IntegerField(default=1)
     tournament_id = serializers.IntegerField(default=1)
 
@@ -84,12 +118,25 @@ class ParticipantSerializer(serializers.ModelSerializer):
         fields = ['id', 'player_id', 'tournament_id', 'score', 'wins', 'draws', 'losses']
 
     def create(self, validated_data):
+        """
+        Create a new Participant instance.
+
+        Validates that a player does not participate in the same tournament more than once. 
+        Removes 'player_id' and 'tournament_id' from validated data after fetching the corresponding objects.
+
+        Args:
+            validated_data (dict): The validated data for creating a new Participant instance.
+
+        Returns:
+            Participant: The created Participant instance.
+
+        Raises:
+            ValidationError: If the player is already participating in the tournament.
+        """
         player_id = validated_data.get('player_id')
         tournament_id = validated_data.get('tournament_id')
 
         player_ids = [participant.player_id for participant in Participant.objects.filter(tournament_id=tournament_id)]
-        print(player_id)
-        print(player_ids)
         if player_id in player_ids:
             raise ValidationError("A single player cannot participate in a tournament twice!")
         else:
@@ -108,6 +155,22 @@ class ParticipantSerializer(serializers.ModelSerializer):
             return participant
     
     def update(self, instance, validated_data):
+        """
+        Update an existing Participant instance.
+
+        Ensures 'player_id' and 'tournament_id' cannot be changed once the participant has been created.
+        Updates the participant's score, wins, draws, and losses.
+
+        Args:
+            instance (Participant): The existing Participant instance to be updated.
+            validated_data (dict): The validated data for updating the Participant instance.
+
+        Returns:
+            Participant: The updated Participant instance.
+
+        Raises:
+            ValidationError: If 'player_id' or 'tournament_id' are included in the validated data.
+        """
         if 'player_id' in validated_data:
             raise ValidationError("Cannot update 'player' once the participant has been created.")
         if 'tournament_id' in validated_data:
@@ -119,3 +182,5 @@ class ParticipantSerializer(serializers.ModelSerializer):
         instance.draws = validated_data.get('draws', instance.draws)
         instance.losses = validated_data.get('losses', instance.losses)
         instance.save()
+
+        return instance

@@ -1,3 +1,26 @@
+"""
+URL Patterns:
+
+Authentication endpoints:
+- 'register/': Register a new user.
+- 'token/': Obtain JWT tokens (Log In).
+- 'token/refresh/': Refresh JWT tokens.
+- 'token/verify/': Verify JWT tokens.
+- 'token/blacklist/': Blacklist JWT tokens (Log Out).
+
+Player management endpoints:
+- 'players/': List all players (admin only).
+- 'players/add/': Add a new player (admin only).
+- 'players/<int:pk>/': Read details of a specific player (admin only).
+- 'players/update/<int:pk>/': Update details of a specific player (admin only).
+- 'players/delete/<int:pk>/': Delete a specific player (admin only).
+- 'players/activity/<int:pk>/': Change the activity status of a specific player (admin only).
+
+Profile endpoints:
+- 'profile/': View the profile of the logged-in user.
+- 'profile/edit/': Edit the profile of the logged-in user.
+"""
+
 from django.urls import path
 from .views import (
     RegisterView,
@@ -40,25 +63,3 @@ urlpatterns = [
     path('profile/edit/', ProfileUpdateView.as_view(), name='profile-edit')
 ]
 
-"""
-URL Patterns:
-
-Authentication endpoints:
-- 'register/': Register a new user.
-- 'token/': Obtain JWT tokens (Log In).
-- 'token/refresh/': Refresh JWT tokens.
-- 'token/verify/': Verify JWT tokens.
-- 'token/blacklist/': Blacklist JWT tokens (Log Out).
-
-Player management endpoints:
-- 'players/': List all players (admin only).
-- 'players/add/': Add a new player (admin only).
-- 'players/<int:pk>/': Read details of a specific player (admin only).
-- 'players/update/<int:pk>/': Update details of a specific player (admin only).
-- 'players/delete/<int:pk>/': Delete a specific player (admin only).
-- 'players/activity/<int:pk>/': Change the activity status of a specific player (admin only).
-
-Profile endpoints:
-- 'profile/': View the profile of the logged-in user.
-- 'profile/edit/': Edit the profile of the logged-in user.
-"""

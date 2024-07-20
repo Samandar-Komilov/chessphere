@@ -61,7 +61,7 @@ class TournamentViewSet(viewsets.ModelViewSet):
             called after the serializer has validated the incoming data. The method saves the serializer
             to update the existing tournament in the database.
     """
-    queryset = Tournament.objects.all()
+    queryset = Tournament.objects.all().order_by('id')
     serializer_class = TournamentSerializer
     permission_classes = [IsAdminUser]
     authentication_classes = [JWTAuthentication]
@@ -77,7 +77,20 @@ class TournamentViewSet(viewsets.ModelViewSet):
 
 
 class ParticipantViewSet(viewsets.ModelViewSet):
-    queryset = Participant.objects.all()
+    """
+    A viewset for viewing and editing participant instances.
+
+    This viewset provides `list`, `create`, `retrieve`, `update`, and `destroy` actions.
+    Only admin users are allowed to access this viewset. Authentication is handled by JWT.
+
+    Attributes:
+        queryset (QuerySet): The queryset for retrieving all participants, ordered by 'id'.
+        serializer_class (Serializer): The serializer class used for participant instances.
+        permission_classes (list): The list of permission classes that determine access to this viewset.
+        authentication_classes (list): The list of authentication classes used for this viewset.
+        pagination_class (class): The pagination class used for this viewset.
+    """
+    queryset = Participant.objects.all().order_by('id')
     serializer_class = ParticipantSerializer
     permission_classes = [IsAdminUser]
     authentication_classes = [JWTAuthentication]
@@ -93,6 +106,18 @@ class ParticipantViewSet(viewsets.ModelViewSet):
 
 
 class TournamentParticipantsListView(generics.ListAPIView):
+    """
+    A view that returns a list of participants for a specific tournament.
+
+    This view provides a `list` action to retrieve participants of a tournament specified by the tournament ID (pk) in the URL.
+    Only authenticated users are allowed to access this view. Authentication is handled by JWT.
+
+    Attributes:
+        serializer_class (Serializer): The serializer class used for the participant instances.
+        pagination_class (class): The pagination class used for this view.
+        authentication_classes (list): The list of authentication classes used for this view.
+        permission_classes (list): The list of permission classes that determine access to this view.
+    """
     serializer_class = TournamentParticipantSerializer
     pagination_class = ParticipantPagination
     authentication_classes = [JWTAuthentication]
@@ -103,4 +128,4 @@ class TournamentParticipantsListView(generics.ListAPIView):
         This view returns a list of all participants for a tournament as specified by the tournament ID (pk) in the URL.
         """
         tournament_id = self.kwargs['pk']
-        return Participant.objects.filter(tournament_id=tournament_id).select_related('player__user')
+        return Participant.objects.filter(tournament_id=tournament_id).select_related('player__user').order_by('id')
