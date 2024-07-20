@@ -92,7 +92,7 @@ players = [Player(id=i, name=f"Player {i}") for i in range(20)]
 tournament = Tournament(players)
 
 # Simulate multiple rounds
-num_rounds = 7
+num_rounds = 9
 for round_num in range(1, num_rounds + 1):
     print(f"\nRound {round_num}")
     pairs = pair_players(tournament.players)
