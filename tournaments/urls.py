@@ -21,7 +21,7 @@ Usage:
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from .views import TournamentViewSet
+from .views import TournamentViewSet, ParticipantViewSet, TournamentParticipantsListView
 
 
 router = DefaultRouter()
@@ -29,5 +29,12 @@ router.register(r'tournaments', TournamentViewSet)
 
 
 urlpatterns = [
-    path('', include(router.urls))
+    # Tournaments
+    path('', include(router.urls)),
+    path('tournaments/<int:pk>/participants/', TournamentParticipantsListView.as_view(), name="tournament-participants"),
+
+    # Participants
+    path('participants/create/', ParticipantViewSet.as_view({'post': 'create'}), name='participant-create'),
+    path('participants/<int:pk>/', ParticipantViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name='participant-detail'),
+    # path('participants', ParticipantViewSet.as_view({'get': 'list'}), name='participant-list'),
 ]

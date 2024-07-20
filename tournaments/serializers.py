@@ -1,7 +1,9 @@
 from rest_framework import serializers
+from rest_framework.response import Response
 from django.core.exceptions import ValidationError
 
-from .models import Tournament, Round
+from .models import Tournament, Round, Participant, Match, Player
+from users.serializers import PlayerSerializer
 
 class TournamentSerializer(serializers.ModelSerializer):
     """
@@ -62,3 +64,58 @@ class TournamentSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+    
+
+class TournamentParticipantSerializer(serializers.ModelSerializer):
+    player = PlayerSerializer(read_only=True)
+
+    class Meta:
+        model = Participant
+        fields = ['id', 'player', 'score', 'wins', 'draws', 'losses']
+
+
+
+class ParticipantSerializer(serializers.ModelSerializer):
+    player_id = serializers.IntegerField(default=1)
+    tournament_id = serializers.IntegerField(default=1)
+
+    class Meta:
+        model = Participant
+        fields = ['id', 'player_id', 'tournament_id', 'score', 'wins', 'draws', 'losses']
+
+    def create(self, validated_data):
+        player_id = validated_data.get('player_id')
+        tournament_id = validated_data.get('tournament_id')
+
+        player_ids = [participant.player_id for participant in Participant.objects.filter(tournament_id=tournament_id)]
+        print(player_id)
+        print(player_ids)
+        if player_id in player_ids:
+            raise ValidationError("A single player cannot participate in a tournament twice!")
+        else:
+            player = Player.objects.get(id=player_id)
+            tournament = Tournament.objects.get(id=tournament_id)
+
+            validated_data.pop('player_id')
+            validated_data.pop('tournament_id')
+
+            participant = Participant.objects.create(
+                player=player,
+                tournament=tournament,
+                **validated_data
+            )
+
+            return participant
+    
+    def update(self, instance, validated_data):
+        if 'player_id' in validated_data:
+            raise ValidationError("Cannot update 'player' once the participant has been created.")
+        if 'tournament_id' in validated_data:
+            raise ValidationError("Cannot update 'tournament' once the participant has been created.")
+        
+
+        instance.score = validated_data.get('score', instance.score)
+        instance.wins = validated_data.get('wins', instance.wins)
+        instance.draws = validated_data.get('draws', instance.draws)
+        instance.losses = validated_data.get('losses', instance.losses)
+        instance.save()

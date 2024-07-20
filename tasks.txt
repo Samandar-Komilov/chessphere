@@ -1,0 +1,43 @@
+---< User Auth >---
+1. Initialize project +
+2. JWT authentication support +
+3. Register user +
+4. Add Swagger doc support +
+
+---< Player Management >---
+1. Admin can do CRUD on player objects (protected routes) +
+
+---< Tournament Management >---
+1. Create proper models for tournament and matches +
+2. Admin can create tournament +
+3. Admin can add players to tournaments (Add participants and assign them to a specific tournament)
+4. Tournament has to contain a unique name and a list of participants ("no participants") +
+
+---< Match management >---
+1. Swiss-system tournament rules +
+2. Auto pair users +
+3. Admins can update match results
+
+---< Leaderboard >---
+1. Generate a leaderboard for each tournament (rank, ranking, points, username, ...)
+
+
+API docs and testing should be included in all!!
+
+
+
+**************************
+
+<19-07-24>
+1. Admin manage tournaments (CRUD) +
+    - list all tournaments +
+2. Generate Rounds +
+3. Add participants to a tournament
+4. Sort players according to their scores
+5. Generate Pairings (Matches), their results, leaderboards to each round and overall tournament
+6. Admin can modify match data
++7. Generate xls+pdf of leaderboard
+
+
+1. Testing
+2. GitHub README doc writing
