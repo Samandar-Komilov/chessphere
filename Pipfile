@@ -13,6 +13,7 @@ drf-yasg = "*"
 faker = "*"
 pytest = "*"
 pytest-django = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
