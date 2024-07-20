@@ -51,14 +51,19 @@ The app consists of the following functionalities:
 - Tournaments management by admins
 - Participants management by admins
 
-### Details
+### Users and Players
 There is a separate `Player` model which represents players and is linked to `User` model as OneToOne relationship. (This method is considered as better approach to extend default `User` model). When a user registers, a corresponding `Player` object will be created too. Admins can create new users and players, change their data and delete them. 
 
+### Tournaments
 Admins can create, update and delete tournaments. They contain a certain number of participants, which are independent models from `Player`. This is because, there are many tournaments and a single player can attend multiple ones with distinct statistics. Hence, I used `Participant` model to represent that instance. Admins and registered users can see a list of participants to a tournament.
 
+### Rounds
 A `Tournament` instance consists of `num_of_rounds` field - certain number of rounds (from 1 to 11 in this case). When a new tournament is created, that number of `Round` objects are created automatically. But once created, the `num_of_rounds` field cannot be changed even by admins.
 
+### Matches
 `Match` objects represent pairings and their results per round. They contain foreign keys to black and white players and the winner between them. If draw occurs, winner will be `None` and draw flag become `True`. This is crucial to represent their stats in W/D/L form.
+
+### Simulation
 Using Python's built-in `random` module, we can simulate the whole tournament and its results. I implemented that functionality in `simulate_tournament.py` file using pure Python objects. The simulation:
 - pairs players for each round
 - randomly choose the match result
@@ -66,6 +71,7 @@ Using Python's built-in `random` module, we can simulate the whole tournament an
 - lists the leaderboard for each round
 Soon, I'll implement this functionality in django too, just it is a matter of time. 
 
+### Idea
 But the idea is:
 - `/tournament/<int:pk>/generate-pairings/` endpoint is responsible to generate all pairings for all rounds. Each pairing represent a `Match` object with a random result. So, for example, a tournament with 3 rounds and 10 participants will generate 5×3=15 `Match` objects. We can access the corresponding rounds and matches using their ids, like:
 - `/tournaments/<int:pk>/rounds/<int:pk>/match/<match_id>/`
